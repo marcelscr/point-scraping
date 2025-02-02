@@ -11,7 +11,7 @@ A little project to fetch the point parity from rewards programs.
 - Clone the repository
 
 ```
-git clone  https://github.com/marcelscr/point-scraping.git
+git clone https://github.com/marcelscr/point-scraping.git
 ```
 
 - Install dependencies

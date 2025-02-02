@@ -5,7 +5,7 @@ const ua =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36";
 
 // Partners to filter. Leave empty to get all partners.
-const partners = [];
+const partners = ["amazon", "asics", "centauro", "farmacias app", "netshoes"];
 
 // Launch the browser and open a new blank page
 const browser = await puppeteer.launch({ headless: true });
