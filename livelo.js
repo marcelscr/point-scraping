@@ -4,8 +4,6 @@ import puppeteer from "puppeteer";
 const ua =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36";
 
-const liveloUrl = "https://www.livelo.com.br/ganhe-pontos-compre-e-pontue";
-
 // Partners to filter. Leave empty to get all partners.
 const partners = ["amazon", "asics", "centauro", "farmacias app", "netshoes"];
 
@@ -13,17 +11,23 @@ const partners = ["amazon", "asics", "centauro", "farmacias app", "netshoes"];
 const browser = await puppeteer.launch({ headless: true });
 
 // Open a new blank page and navigate to the Livelo URL
-const liveloPage = await browser.newPage();
-liveloPage.setUserAgent(ua);
-await liveloPage.goto(liveloUrl, {
+const page = await browser.newPage();
+page.setUserAgent(ua);
+await page.goto("https://www.livelo.com.br/ganhe-pontos-compre-e-pontue", {
   waitUntil: "networkidle0",
 });
 
 // Set screen size.
-await liveloPage.setViewport({ width: 1080, height: 1024 });
+await page.setViewport({ width: 1080, height: 1024 });
+
+if (partners.length > 0) {
+  console.log(`Searching for partners: ${partners.join(", ")} in Livelo...`);
+} else {
+  console.log("Searching all partners  in Livelo...");
+}
 
 // Extract the required information
-const data = await liveloPage.$$eval("#div-parity", (cards) =>
+const data = await page.$$eval("#div-parity", (cards) =>
   cards.map((card) => {
     const image = card.querySelector(".parity__card--img"); // Get image element
     const currencyElement = card.querySelector(
@@ -41,7 +45,6 @@ const data = await liveloPage.$$eval("#div-parity", (cards) =>
       return {
         program: "Livelo",
         partner: image ? image.alt.trim() : null,
-        clubBonus: false,
         currency: valueElement ? currencyElement.textContent.trim() : null,
         value: valueElement ? valueElement.textContent.trim() : null,
         parity: parityElement ? parityElement.textContent.trim() : null,
@@ -67,7 +70,6 @@ const data = await liveloPage.$$eval("#div-parity", (cards) =>
     return {
       program: "Livelo",
       partner: image ? image.alt.trim() : null,
-      clubBonus: true,
       ...parseClubParityString(clubParityElement.textContent.trim()),
     };
   })
