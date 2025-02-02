@@ -3,7 +3,7 @@ import puppeteer from "puppeteer";
 // Mocked User Agent
 const ua =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36";
-
+const url = "https://www.esfera.com.vc/c/junte-pontos/junte-pontos/esf02163";
 // Partners to filter. Leave empty to get all partners.
 const partners = ["amazon", "asics", "centauro", "farmacias app", "netshoes"];
 
@@ -13,12 +13,12 @@ const browser = await puppeteer.launch({ headless: true });
 // Open a new blank page and navigate to the Esfera URL
 const page = await browser.newPage();
 page.setUserAgent(ua);
-await page.goto(
-  "https://www.esfera.com.vc/c/junte-pontos/junte-pontos/esf02163",
-  {
-    waitUntil: "networkidle0",
-  }
-);
+
+console.log(`Opening ${url}...`);
+
+await page.goto(url, {
+  waitUntil: "networkidle0",
+});
 
 // Set screen size.
 await page.setViewport({ width: 1080, height: 1024 });
@@ -37,7 +37,7 @@ const data = await page.$$eval(".box-partner-custom", (cards) =>
     );
     const amountElement = card.querySelector(
       '[data-bind="text: $parent.accumulationPointsConvert($data.esf_accumulationAmount)"]'
-    ); // Get currency
+    );
     const accumulationRuleElement = card.querySelector(".textPoints");
 
     const accumulationText = accumulationRuleElement

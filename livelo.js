@@ -3,7 +3,7 @@ import puppeteer from "puppeteer";
 // Mocked User Agent
 const ua =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36";
-
+const url = "https://www.livelo.com.br/ganhe-pontos-compre-e-pontue";
 // Partners to filter. Leave empty to get all partners.
 const partners = ["amazon", "asics", "centauro", "farmacias app", "netshoes"];
 
@@ -13,7 +13,10 @@ const browser = await puppeteer.launch({ headless: true });
 // Open a new blank page and navigate to the Livelo URL
 const page = await browser.newPage();
 page.setUserAgent(ua);
-await page.goto("https://www.livelo.com.br/ganhe-pontos-compre-e-pontue", {
+
+console.log(`Opening ${url}...`);
+
+await page.goto(url, {
   waitUntil: "networkidle0",
 });
 
@@ -29,17 +32,18 @@ if (partners.length > 0) {
 // Extract the required information
 const data = await page.$$eval("#div-parity", (cards) =>
   cards.map((card) => {
-    const image = card.querySelector(".parity__card--img"); // Get image element
+    const image = card.querySelector(".parity__card--img");
     const currencyElement = card.querySelector(
       '[data-bind="text: $data.currency"]'
-    ); // Get currency
-    const valueElement = card.querySelector('[data-bind="text: $data.value"]'); // Get value
+    );
+    const valueElement = card.querySelector('[data-bind="text: $data.value"]');
     const parityElement = card.querySelector(
       '[data-bind="text: $data.parity"]'
-    ); // Get parity
+    );
+    // Check if the card has a club bunus, which changes the structure of the card
     const clubParityElement = card.querySelector(
       '[data-bind="text: $data.extended_parity_clube"]'
-    ); // Get club parity
+    );
 
     if (!clubParityElement) {
       return {
