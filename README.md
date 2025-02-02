@@ -24,7 +24,7 @@ pnpm install
 - Run the scrapper
 
 ```
-pnpm livelo
+pnpm start
 ```
 
 The current partners point parity will be logged on the console.

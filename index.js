@@ -4,24 +4,26 @@ import puppeteer from "puppeteer";
 const ua =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36";
 
+const liveloUrl = "https://www.livelo.com.br/ganhe-pontos-compre-e-pontue";
+
 // Partners to filter. Leave empty to get all partners.
 const partners = ["amazon", "asics", "centauro", "farmacias app", "netshoes"];
 
 // Launch the browser and open a new blank page
 const browser = await puppeteer.launch({ headless: true });
-const page = await browser.newPage();
-page.setUserAgent(ua);
 
-// Navigate the page to a URL.
-await page.goto("https://www.livelo.com.br/ganhe-pontos-compre-e-pontue", {
+// Open a new blank page and navigate to the Livelo URL
+const liveloPage = await browser.newPage();
+liveloPage.setUserAgent(ua);
+await liveloPage.goto(liveloUrl, {
   waitUntil: "networkidle0",
 });
 
 // Set screen size.
-await page.setViewport({ width: 1080, height: 1024 });
+await liveloPage.setViewport({ width: 1080, height: 1024 });
 
 // Extract the required information
-const data = await page.$$eval("#div-parity", (cards) =>
+const data = await liveloPage.$$eval("#div-parity", (cards) =>
   cards.map((card) => {
     const image = card.querySelector(".parity__card--img"); // Get image element
     const currencyElement = card.querySelector(
@@ -37,6 +39,7 @@ const data = await page.$$eval("#div-parity", (cards) =>
 
     if (!clubParityElement) {
       return {
+        program: "Livelo",
         partner: image ? image.alt.trim() : null,
         clubBonus: false,
         currency: valueElement ? currencyElement.textContent.trim() : null,
@@ -62,6 +65,7 @@ const data = await page.$$eval("#div-parity", (cards) =>
     };
 
     return {
+      program: "Livelo",
       partner: image ? image.alt.trim() : null,
       clubBonus: true,
       ...parseClubParityString(clubParityElement.textContent.trim()),
