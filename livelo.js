@@ -49,7 +49,7 @@ const data = await page.$$eval("#div-parity", (cards) =>
       return {
         program: "Livelo",
         partner: image ? image.alt.trim() : null,
-        currency: valueElement ? currencyElement.textContent.trim() : null,
+        currency: currencyElement ? currencyElement.textContent.trim() : null,
         value: valueElement ? valueElement.textContent.trim() : null,
         parity: parityElement ? parityElement.textContent.trim() : null,
       };
